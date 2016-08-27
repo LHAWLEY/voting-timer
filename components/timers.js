@@ -4,7 +4,6 @@ import { StyleSheet, View, ListView } from 'react-native';
 import Button from './button';
 import ClockModel from '../models/clock_model';
 import Timer from './timer';
-import Header from './header';
 
 const styles = StyleSheet.create({
   container: {
@@ -46,15 +45,11 @@ class Timers extends Component {
     _.invoke(this.state.rows, 'reset')
   }
 
-  renderHeader () {
-    return <Header text="Timers" />
-  }
 
   render () {
     return (
       <View style={styles.container}>
         <ListView
-          renderHeader={this.renderHeader.bind(this)}
           dataSource={this.state.datasource}
           renderRow={rowData => <Timer model={rowData} />}
         />

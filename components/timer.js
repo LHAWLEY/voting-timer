@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2ECC71'
   },
   lastButton: {
-    marginLeft: 60,
+    marginLeft: 50,
     height: 80,
     width: 80,
     flex: 1,
@@ -38,6 +38,21 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingBottom: 5,
     marginTop: 1
+  },
+  clock: {
+    height: 80,
+    width: 80,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 2,
+    paddingTop: 25,
+    // borderRadius: 40,
+    // backgroundColor: 'yellow',
+    fontSize: 24,
+    color: '#fff',
+    fontWeight: 'bold'
   }
 });
 
@@ -60,7 +75,7 @@ class Timer extends Component {
     return (
       <View style={styles.row}>
         <Button text="Start" style={styles.firstButton} onClick={this.startTimer.bind(this)} />
-        <Text>{this.props.model.asClock()}</Text>
+        <Text style={styles.clock}>{this.props.model.asClock()}</Text>
         <Button text="Vacant" style={styles.lastButton} onClick={this.endTimer.bind(this)} />
       </View>
     );

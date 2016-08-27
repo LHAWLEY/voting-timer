@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, TextInput, Picker, Text } from 'react-native';
+import Timers from './timers';
 import Button from './button';
-import RaceForm from './race_form';
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 75,
+    paddingTop: 50,
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
@@ -20,14 +20,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   input: {
+    backgroundColor: '#fff',
     height: 50,
     borderColor: '#666',
     borderWidth: 1,
-    paddingLeft: 20
+    paddingLeft: 20,
+    marginTop: 5
   },
   selectorTitle: {
     textAlign: 'center',
-    fontSize: 25
+    fontSize: 25,
   },
   next: {
     backgroundColor: '#2ECC71',
@@ -37,12 +39,12 @@ const styles = StyleSheet.create({
   }
 });
 
-class Form extends Component {
+class RaceForm extends Component {
 
-  GoToRaceForm() {
+  GoToTimers() {
     this.props.navigator.push({
-      title: 'Race Information',
-      component: RaceForm
+      title: 'Timers',
+      component: Timers
     })
   }
 
@@ -50,12 +52,10 @@ class Form extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      counties: [],
-      text: "Enter Precinct",
-      state: 'Default',
-      county: 'Default'
+      races: "How many races?",
+      propositions: "How many initiatives, propositions, or referndums?",
+      email: "Email (optional)"
     }
-    // fetch('https://go41.com/vote/timer/counties.php?state=IL', obj).then(res => {debugger; return res.json()}).then(function (json) { this.setState({ counties: json.counties }) }.bind(this)).catch(function () {debugger;})
   }
 
   onChange () {
@@ -66,40 +66,45 @@ class Form extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.container2}>
-          <Text style={styles.selectorTitle}>Select a State</Text>
-          <Picker
-            selectedValue='hello'
-            onValueChange={this.onChange.bind(this)}
-          >
-            <Picker.Item label="Wutang" value="wutang" />
-            <Picker.Item label="ODB" value="odb"  />
-            <Picker.Item label="Jay-Z" value="jayz" />
-          </Picker>
+          <TextInput
+            style={styles.input}
+            onChangeText={(races) => this.setState({races})}
+            value={this.state.races}
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(propositions) => this.setState({propositions})}
+            value={this.state.propositions}
+          />
         </View>
         <View style={styles.container2}>
-          <Text style={styles.selectorTitle}>Select a County</Text>
+          <Text style={styles.selectorTitle}>What is the voting style?</Text>
           <Picker
             selectedValue='wutang'
             onValueChange={this.onChange.bind(this)}
           >
-            <Picker.Item label="Wutang" value="wutang" />
-            <Picker.Item label="ODB" value="odb"  />
-            <Picker.Item label="Jay-Z" value="jayz" />
+            <Picker.Item label="Paper" value="Paper" />
+            <Picker.Item label="DRE" value="DRE"  />
+            <Picker.Item label="DRE with VVPAT" value="DRE with VVPAT" />
+            <Picker.Item label="Other" value="Other" />
           </Picker>
         </View>
         <TextInput
           style={styles.input}
-          onChangeText={(text) => this.setState({text})}
-          value={this.state.text}
+          onChangeText={(email) => this.setState({email})}
+          value={this.state.email}
         />
         <Button
           text="Next"
           style={styles.next}
-          onClick={() => this.GoToRaceForm()}
+          onClick={() => this.GoToTimers()}
         />
       </View>
     );
   }
 }
 
-export default Form
+export default RaceForm
+
+
+
