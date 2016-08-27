@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
 import moment from 'moment';
 import {
   AppRegistry,
@@ -24,16 +23,20 @@ class Button extends Component {
 }
 
 class Timer extends Component {
-  toggleTimer () {
+  startTimer () {
+    this.props.model.start()
+  }
 
+  endTimer () {
+    this.props.model.stop()
   }
 
   render () {
     return (
       <View style={styles.row}>
-        <Button text="Start" style={styles.firstButton} onClick={this.toggleTimer.bind(this)} />
-        <Button text="Clock" style={styles.button} onClick={this.toggleTimer.bind(this)} />
-        <Button text="Vacant" style={styles.lastButton} onClick={this.toggleTimer.bind(this)} />
+        <Button text="Start" style={styles.firstButton} onClick={this.startTimer.bind(this)} />
+        <Button text="Clock" style={styles.button} onClick={this.startTimer.bind(this)} />
+        <Button text="Vacant" style={styles.lastButton} onClick={this.endTimer.bind(this)} />
       </View>
     );
   }
@@ -43,9 +46,10 @@ const Header = ({ text }) => {
   return <Text style={styles.header}>{text}</Text>
 }
 
-class ClockModel extends ListView.DataSource {
+class ClockModel {
   constructor () {
-    super({ rowHasChanged: (row1, row2) => row1 !== row2 })
+    this.startAt = null
+    this.endAt = null
   }
 
   start () {
@@ -60,7 +64,8 @@ class ClockModel extends ListView.DataSource {
   stop () {
     if (this.startAt && !this.endAt) {
       this.endAt = moment.now()
-      this.save().then(this.reset)
+      this.save().then(response => response.json()).then(json => json)
+      this.reset()
     }
   }
 
@@ -71,20 +76,25 @@ class ClockModel extends ListView.DataSource {
 
   secondsElapsed () {
     if (this.startAt && this.endAt) {
-      return Math.floor((this.startAt - this.endAt) / 1000)
+      return Math.floor((this.endAt - this.startAt) / 1000)
     } else {
       return 0
     }
   }
 
   save () {
-    return $.post('http://www.google.com', this.toJSON())
+    const payload = {
+      method: 'POST',
+      body: this.toJSON()
+    }
+
+    return fetch('http://www.google.com', payload)
   }
 
   toJSON () {
-    return {
+    return JSON.stringify({
       duration: this.secondsElapsed()
-    }
+    })
   }
 }
 
@@ -94,19 +104,21 @@ class Timers extends Component {
   }
 
   render () {
-    const model = new ClockModel()
+    const datasource = new ListView.DataSource({
+      rowHasChanged: (row1, row2) => row1 !== row2
+    })
     const rows = [
-      { startAt: null, endAt: null },
-      { startAt: null, endAt: null },
-      { startAt: null, endAt: null }
+      new ClockModel(),
+      new ClockModel(),
+      new ClockModel()
     ];
 
     return (
       <View style={styles.container}>
         <ListView
           renderHeader={this.renderHeader.bind(this)}
-          dataSource={model.cloneWithRows(rows)}
-          renderRow={() => <Timer />}
+          dataSource={datasource.cloneWithRows(rows)}
+          renderRow={rowData => <Timer model={rowData} />}
         />
         <Button onClick={this.toggleTimer} text="Interrupt"></Button>
       </View>
