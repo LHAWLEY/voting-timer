@@ -37,65 +37,144 @@ const styles = StyleSheet.create({
   }
 });
 
+const URL = 'http://go41.com/vote/timer';
+
 class Form extends Component {
 
-  GoToRaceForm() {
-    this.props.navigator.push({
-      title: 'Race Information',
-      component: RaceForm
-    })
-  }
-
-  // Hack for now
   constructor (props) {
     super(props)
     this.state = {
+      states: [],
       counties: [],
-      text: "Enter Precinct",
-      state: 'Default',
-      county: 'Default'
+      selectedState: null,
+      selectedCounty: null,
+      text: ''
     }
-    // fetch('https://go41.com/vote/timer/counties.php?state=IL', obj).then(res => {debugger; return res.json()}).then(function (json) { this.setState({ counties: json.counties }) }.bind(this)).catch(function () {debugger;})
+    this.fetchStates();
   }
 
-  onChange () {
+  fetchStates () {
+    fetch(`${URL}/states.php`).then(res => res.json()).then(function (json) {
+      this.setState({
+        states: json.states
+      });
+    }.bind(this))
+  }
 
+  fetchCounties () {
+    fetch(`${URL}/counties.php?state=${this.state.selectedState}`)
+      .then(res => res.json())
+      .then(function (json) {
+        this.setState({
+          counties: json.counties
+        })
+      }.bind(this));
+  }
+
+  goToRaceForm() {
+    if (
+      this.state.selectedState &&
+      this.state.selectedCounty &&
+      this.state.text.length
+    ) {
+      this.props.info.update({
+        state: this.state.selectedState,
+        county: this.state.selectedCounty,
+        precinct: this.state.text
+      })
+      this.props.navigator.push({
+        title: 'Race Information',
+        component: RaceForm,
+        passProps: { info: this.props.info }
+      })
+    }
+  }
+
+  selectState (abbrev) {
+    this.setState({
+      selectedState: abbrev
+    }, function () {
+      this.fetchCounties();
+    }.bind(this));
+  }
+
+  selectCounty (county) {
+    this.setState({
+      selectedCounty: county
+    });
+  }
+
+  renderStateSelector () {
+    if (this.state.states.length) {
+      return (
+        <View style={styles.container2}>
+          <Text style={styles.selectorTitle}>Select a State</Text>
+          <Picker
+            selectedValue={this.state.selectedState}
+            onValueChange={this.selectState.bind(this)}
+          >
+            {this.state.states.map(this.renderStateOption)}
+          </Picker>
+        </View>
+      );
+    } else {
+      return <Text>Loading...</Text>;
+    }
+  }
+
+  renderStateOption (state) {
+    return (
+      <Picker.Item
+        key={state.abbrev}
+        label={state.name}
+        value={state.abbrev}
+      />
+    );
+  }
+
+  renderCountySelector () {
+    if (this.state.selectedState && this.state.counties.length) {
+      return (
+        <View style={styles.container2}>
+          <Text style={styles.selectorTitle}>Select a County</Text>
+          <Picker
+            selectedValue={this.state.selectedCounty}
+            onValueChange={this.selectCounty.bind(this)}
+          >
+            {this.state.counties.map(this.renderCountyOption)}
+          </Picker>
+        </View>
+      );
+    } else if (this.state.selectedState) {
+      <Text>Loading...</Text>
+    }
+  }
+
+  renderCountyOption (county, index) {
+    return <Picker.Item key={index} label={county} value={county} />;
+  }
+
+  renderPrecinctField () {
+    return(
+      <TextInput
+        style={styles.input}
+        value={this.state.text}
+        onChangeText={(text) => this.setState({text})}
+        placeholder='Enter Precinct'
+      />
+    );
   }
 
   render () {
     return (
       <View style={styles.container}>
-        <View style={styles.container2}>
-          <Text style={styles.selectorTitle}>Select a State</Text>
-          <Picker
-            selectedValue='hello'
-            onValueChange={this.onChange.bind(this)}
-          >
-            <Picker.Item label="Wutang" value="wutang" />
-            <Picker.Item label="ODB" value="odb"  />
-            <Picker.Item label="Jay-Z" value="jayz" />
-          </Picker>
-        </View>
-        <View style={styles.container2}>
-          <Text style={styles.selectorTitle}>Select a County</Text>
-          <Picker
-            selectedValue='wutang'
-            onValueChange={this.onChange.bind(this)}
-          >
-            <Picker.Item label="Wutang" value="wutang" />
-            <Picker.Item label="ODB" value="odb"  />
-            <Picker.Item label="Jay-Z" value="jayz" />
-          </Picker>
-        </View>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => this.setState({text})}
-          value={this.state.text}
-        />
+        {this.renderStateSelector()}
+        {this.renderCountySelector()}
+        {this.renderPrecinctField()}
         <Button
           text="Next"
           style={styles.next}
-          onClick={() => this.GoToRaceForm()}
+          onClick={() => this.goToRaceForm()}
         />
       </View>
     );
