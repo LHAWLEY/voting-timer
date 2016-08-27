@@ -23,6 +23,12 @@ class Button extends Component {
 }
 
 class Timer extends Component {
+  componentDidMount () {
+    setInterval(function () {
+      this.forceUpdate()
+    }.bind(this), 500)
+  }
+
   startTimer () {
     this.props.model.start()
   }
@@ -35,7 +41,7 @@ class Timer extends Component {
     return (
       <View style={styles.row}>
         <Button text="Start" style={styles.firstButton} onClick={this.startTimer.bind(this)} />
-        <Button text="Clock" style={styles.button} onClick={this.startTimer.bind(this)} />
+        <Text>{this.props.model.asClock()}</Text>
         <Button text="Vacant" style={styles.lastButton} onClick={this.endTimer.bind(this)} />
       </View>
     );
@@ -55,9 +61,9 @@ class ClockModel {
   start () {
     if (!this.startAt) {
       this.startAt = moment.now()
-      // trigger change
-    } else if (this.startDate && !this.endDate) {
+    } else {
       this.stop()
+      this.startAt = moment.now()
     }
   }
 
@@ -80,6 +86,28 @@ class ClockModel {
     } else {
       return 0
     }
+  }
+
+  leftPad (time) {
+    if (time < 10) {
+      return '0' + time
+    } else {
+      return time
+    }
+  }
+
+  getOngoingTime () {
+    if (this.startAt) {
+      return Math.floor((moment.now() - this.startAt) / 1000)
+    } else {
+      return 0
+    }
+  }
+
+  asClock () {
+    const seconds = this.getOngoingTime()
+
+    return `${this.leftPad(Math.floor(seconds / 60))}:${this.leftPad(seconds % 60)}`
   }
 
   save () {
