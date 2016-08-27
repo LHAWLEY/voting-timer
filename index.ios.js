@@ -108,6 +108,7 @@ class Timers extends Component {
           dataSource={model.cloneWithRows(rows)}
           renderRow={() => <Timer />}
         />
+        <Button onClick={this.toggleTimer} text="Interrupt"></Button>
       </View>
     );
   }
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch'
   },
   buttonText: {
-    fontSize: 24,
+    fontSize: 20,
     color: '#fff',
     fontWeight: 'bold'
   }
