@@ -120,7 +120,7 @@ class Timers extends Component {
           dataSource={datasource.cloneWithRows(rows)}
           renderRow={rowData => <Timer model={rowData} />}
         />
-        <Button onClick={this.toggleTimer} text="Interrupt"></Button>
+        <Button text="Cancel" style={styles.cancel} />
       </View>
     );
   }
@@ -200,6 +200,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#fff',
     fontWeight: 'bold'
+  },
+  cancel: {
+    backgroundColor: '#EC644B',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 80,
+    // fontWeight: 'bold'
   }
 });
 
