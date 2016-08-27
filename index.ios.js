@@ -51,16 +51,17 @@ class Timers extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
     backgroundColor: '#F5FCFF',
     paddingTop: 30
   },
   timers: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-start'
+    justifyContent: 'flex-start',
+    alignItems: 'stretch'
   },
   header: {
     fontSize: 14,
