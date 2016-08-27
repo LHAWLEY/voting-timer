@@ -14,8 +14,8 @@ class Button extends Component {
   render () {
     return (
       <TouchableHighlight
+        {...this.props}
         onPress={this.props.onClick}
-        style={styles.button}
       >
         <Text style={styles.buttonText}>{this.props.text}</Text>
       </TouchableHighlight>
@@ -31,9 +31,9 @@ class Timer extends Component {
   render () {
     return (
       <View style={styles.row}>
-        <Button text="Start" onClick={this.toggleTimer.bind(this)} />
-        <Button text="Clock" onClick={this.toggleTimer.bind(this)} />
-        <Button text="Vacant" onClick={this.toggleTimer.bind(this)} />
+        <Button text="Start" style={styles.firstButton} onClick={this.toggleTimer.bind(this)} />
+        <Button text="Clock" style={styles.button} onClick={this.toggleTimer.bind(this)} />
+        <Button text="Vacant" style={styles.lastButton} onClick={this.toggleTimer.bind(this)} />
       </View>
     );
   }
@@ -117,6 +117,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
     backgroundColor: '#aaa'
   },
   header: {
@@ -129,23 +131,60 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   button: {
-    backgroundColor: '#2ECC71',
     height: 80,
+    width: 80,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 2,
-    borderRadius: 50
+    borderRadius: 40,
+    backgroundColor: '#eee'
+  },
+  firstButton: {
+    marginRight: 60,
+    height: 80,
+    width: 80,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 2,
+    borderRadius: 40,
+    backgroundColor: '#2ECC71'
+  },
+  lastButton: {
+    marginLeft: 60,
+    height: 80,
+    width: 80,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 2,
+    borderRadius: 40,
+    backgroundColor: '#EC644B'
+  },
+  start: {
+    backgroundColor: '#2ECC71'
+  },
+  stop: {
+    backgroundColor: 'red'
   },
   row: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    paddingTop: 5,
+    backgroundColor: '#eee',
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 5,
+    marginTop: 1
   },
   buttonText: {
-    fontSize: 24,
+    fontSize: 16,
     color: '#fff',
     fontWeight: 'bold'
   }
