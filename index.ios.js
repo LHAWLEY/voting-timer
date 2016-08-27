@@ -1,16 +1,34 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  ListView,
+  TouchableHighlight
 } from 'react-native';
+
+const Timer = () => {
+  return (
+    <TouchableHighlight style={styles.button}>
+      <Text>Hello</Text>
+    </TouchableHighlight>
+  );
+}
+
+class Timers extends Component {
+
+  render () {
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+    return (
+      <ListView
+        dataSource={ds.cloneWithRows([''])}
+        renderRow={Timer}
+      />
+    );
+  }
+}
 
 class VotingTimer extends Component {
   render() {
@@ -48,6 +66,11 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
+  button: {
+    backgroundColor: 'red',
+    height: 100,
+    width: 100,
+  },
 });
 
-AppRegistry.registerComponent('VotingTimer', () => VotingTimer);
+AppRegistry.registerComponent('VotingTimer', () => Timers);
