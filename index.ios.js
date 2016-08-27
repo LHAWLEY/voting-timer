@@ -8,42 +8,41 @@ import {
   TouchableHighlight
 } from 'react-native';
 
-const Timer = () => {
-  return (
-    <TouchableHighlight style={styles.button}>
-      <Text>Hello</Text>
-    </TouchableHighlight>
-  );
-}
+class Timer extends Component {
+  toggleTimer () {
 
-class Timers extends Component {
+  }
 
   render () {
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
     return (
-      <ListView
-        dataSource={ds.cloneWithRows([''])}
-        renderRow={Timer}
-      />
+      <TouchableHighlight
+        onPress={this.toggleTimer.bind(this)}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Start</Text>
+      </TouchableHighlight>
     );
   }
 }
 
-class VotingTimer extends Component {
-  render() {
+class Header extends Component {
+  render () {
+    return <Text style={styles.header}>Timers</Text>
+  }
+}
+
+class Timers extends Component {
+  render () {
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+        <ListView
+          renderHeader={() => <Header />}
+          dataSource={ds.cloneWithRows([''])}
+          renderRow={() => <Timer />}
+          contentContainerStyle={styles.timers}
+        />
       </View>
     );
   }
@@ -55,22 +54,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+    paddingTop: 30
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  timers: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start'
   },
-  instructions: {
+  header: {
+    fontSize: 14,
+    backgroundColor: '#F5FCFF',
     textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+    borderBottomWidth: 12,
+    borderBottomColor: '#444',
+    fontWeight: 'bold'
   },
   button: {
-    backgroundColor: 'red',
-    height: 100,
-    width: 100,
+    backgroundColor: '#d6f3ff',
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
+  buttonText: {
+    fontSize: 24
+  }
 });
 
 AppRegistry.registerComponent('VotingTimer', () => Timers);
