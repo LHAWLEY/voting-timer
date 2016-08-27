@@ -5,7 +5,7 @@ import Button from './button';
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 50,
+    paddingTop: 55,
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
