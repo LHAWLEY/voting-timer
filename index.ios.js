@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
+import moment from 'moment';
 import {
   AppRegistry,
   StyleSheet,
@@ -37,24 +39,73 @@ class Timer extends Component {
   }
 }
 
-class Header extends Component {
-  render () {
-    return <Text style={styles.header}>Timers</Text>
+const Header = ({ text }) => {
+  return <Text style={styles.header}>{text}</Text>
+}
+
+class ClockModel extends ListView.DataSource {
+  constructor () {
+    super({ rowHasChanged: (row1, row2) => row1 !== row2 })
+  }
+
+  start () {
+    if (!this.startAt) {
+      this.startAt = moment.now()
+      // trigger change
+    } else if (this.startDate && !this.endDate) {
+      this.stop()
+    }
+  }
+
+  stop () {
+    if (this.startAt && !this.endAt) {
+      this.endAt = moment.now()
+      this.save().then(this.reset)
+    }
+  }
+
+  reset () {
+    this.startAt = null
+    this.endAt = null
+  }
+
+  secondsElapsed () {
+    if (this.startAt && this.endAt) {
+      return Math.floor((this.startAt - this.endAt) / 1000)
+    } else {
+      return 0
+    }
+  }
+
+  save () {
+    return $.post('http://www.google.com', this.toJSON())
+  }
+
+  toJSON () {
+    return {
+      duration: this.secondsElapsed()
+    }
   }
 }
 
 class Timers extends Component {
+  renderHeader () {
+    return <Header text="Timers" />
+  }
+
   render () {
-    const rows = ['Start', 'Start', 'Start'];
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
+    const model = new ClockModel()
+    const rows = [
+      { startAt: null, endAt: null },
+      { startAt: null, endAt: null },
+      { startAt: null, endAt: null }
+    ];
 
     return (
       <View style={styles.container}>
         <ListView
-          renderHeader={() => <Header />}
-          dataSource={ds.cloneWithRows(rows)}
+          renderHeader={this.renderHeader.bind(this)}
+          dataSource={model.cloneWithRows(rows)}
           renderRow={() => <Timer />}
         />
       </View>
