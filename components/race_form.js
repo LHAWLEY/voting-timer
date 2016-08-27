@@ -40,26 +40,39 @@ const styles = StyleSheet.create({
 });
 
 class RaceForm extends Component {
-
-  GoToTimers() {
-    this.props.navigator.push({
-      title: 'Timers',
-      component: Timers
-    })
-  }
-
-  // Hack for now
   constructor (props) {
     super(props)
     this.state = {
-      races: "How many races?",
-      propositions: "How many initiatives, propositions, or referndums?",
-      email: "Email (optional)"
+      races: '',
+      voting_style: '',
+      props: '',
+      email: ''
     }
   }
 
-  onChange () {
+  goToTimers() {
+    if (
+      parseInt(this.state.races) &&
+      parseInt(this.state.props) &&
+      this.state.voting_style
+    ) {
+      this.props.info.update({
+        races: parseInt(this.state.races),
+        props: parseInt(this.state.props),
+        voting_style: this.state.voting_style,
+        email: this.state.email
+      })
 
+      this.props.navigator.push({
+        title: 'Timers',
+        component: Timers,
+        passProps: { info: this.props.info }
+      })
+    }
+  }
+
+  selectStyle (voting_style) {
+    this.setState({ voting_style })
   }
 
   render () {
@@ -68,23 +81,25 @@ class RaceForm extends Component {
         <View style={styles.container2}>
           <TextInput
             style={styles.input}
-            onChangeText={(races) => this.setState({races})}
+            onChangeText={(races) => this.setState({ races: races })}
             value={this.state.races}
+            placeholder='How many races?'
           />
           <TextInput
             style={styles.input}
-            onChangeText={(propositions) => this.setState({propositions})}
-            value={this.state.propositions}
+            onChangeText={(props) => this.setState({ props: props })}
+            value={this.state.props}
+            placeholder='How many initiatives?'
           />
         </View>
         <View style={styles.container2}>
           <Text style={styles.selectorTitle}>What is the voting style?</Text>
           <Picker
-            selectedValue='wutang'
-            onValueChange={this.onChange.bind(this)}
+            selectedValue={this.state.voting_style}
+            onValueChange={this.selectStyle.bind(this)}
           >
             <Picker.Item label="Paper" value="Paper" />
-            <Picker.Item label="DRE" value="DRE"  />
+            <Picker.Item label="DRE" value="DRE" />
             <Picker.Item label="DRE with VVPAT" value="DRE with VVPAT" />
             <Picker.Item label="Other" value="Other" />
           </Picker>
@@ -93,11 +108,12 @@ class RaceForm extends Component {
           style={styles.input}
           onChangeText={(email) => this.setState({email})}
           value={this.state.email}
+          placeholder='Email (optional)'
         />
         <Button
           text="Next"
           style={styles.next}
-          onClick={() => this.GoToTimers()}
+          onClick={() => this.goToTimers()}
         />
       </View>
     );

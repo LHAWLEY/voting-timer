@@ -30,9 +30,9 @@ class Timers extends Component {
       rowHasChanged: (row1, row2) => row1 !== row2
     })
     const rows = [
-      new ClockModel(),
-      new ClockModel(),
-      new ClockModel()
+      new ClockModel(this.props.info.toJSON()),
+      new ClockModel(this.props.info.toJSON()),
+      new ClockModel(this.props.info.toJSON())
     ]
 
     this.state = {
@@ -44,7 +44,6 @@ class Timers extends Component {
   clearAll () {
     _.invoke(this.state.rows, 'reset')
   }
-
 
   render () {
     return (

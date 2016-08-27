@@ -1,7 +1,8 @@
 import moment from 'moment';
 
 class ClockModel {
-  constructor () {
+  constructor (props) {
+    this.info = JSON.parse(props)
     this.startAt = null
     this.endAt = null
   }
@@ -18,7 +19,7 @@ class ClockModel {
   stop () {
     if (this.startAt && !this.endAt) {
       this.endAt = moment.now()
-      this.save().then(response => response.json()).then(json => json)
+      this.save()
       this.reset()
     }
   }
@@ -59,18 +60,17 @@ class ClockModel {
   }
 
   save () {
+    let body = this.info
+    body.durations = [this.secondsElapsed()]
     const payload = {
       method: 'POST',
-      body: this.toJSON()
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
     }
-
-    return fetch('http://www.google.com', payload)
-  }
-
-  toJSON () {
-    return JSON.stringify({
-      duration: this.secondsElapsed()
-    })
+    fetch('http://54.161.224.89:5000/update', payload).catch(err => console.log(err))
   }
 }
 

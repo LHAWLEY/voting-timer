@@ -2,11 +2,12 @@ import moment from 'moment';
 
 class InfoModel {
   constructor () {
+    this.uuid = 11111111111
     this.state = null
     this.county = null
     this.precinct = null
     this.races = 0
-    this.props = null
+    this.props = 0
     this.voting_style = null
     this.email = null
   }
@@ -19,6 +20,7 @@ class InfoModel {
 
   toJSON () {
     return JSON.stringify({
+      uuid: this.uuid,
       state: this.state,
       county: this.county,
       precinct: this.precinct,
